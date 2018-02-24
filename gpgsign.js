@@ -21,12 +21,12 @@ function gpgSign (opts) {
   opts = opts || {}
   opts = Object.assign(opts, defaults)
   const { callback, override } = opts
-
-  console.log('gpgsign')
-  console.log(override)
+  
+  // console.log('gpgsign')
+  // console.log(override)
 
   function sendSig (content, callback) {
-    console.log('sendsig')
+    // console.log('sendsig')
     if (typeof callback === 'undefined') {
       return function (err, html) {
         if (err) return next(err)
@@ -54,7 +54,7 @@ function gpgSign (opts) {
 
   function signPage (req, res, next) {
     const content = res.body
-    console.log('signpage')
+    // console.log('signpage')
 
     if (override === true) {
       res.oldRenderMethod = res.render
