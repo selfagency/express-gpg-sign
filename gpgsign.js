@@ -14,51 +14,59 @@ function getSignature (data) {
 }
 
 function gpgSign (opts) {
-	let default_opts = {
-    cb: undefined,
-		override: true
-	}
+  const defaults = {
+    callback: undefined,
+    override: true
+  }
   opts = opts || {}
-  opts = Object.assign(opts, default_opts)
-  cb = opts.cb
+  opts = Object.assign(opts, defaults)
+  const { callback, override } = opts
 
-  function signPage (req, res, next) {
-    function sendSig (cb) {
-      if (typeof cb === 'undefined') {
-        return function (err, html) {
-          if (err) return next(err)
-          getSignature(res.body)
-            .then(out => {
-              html = out
-              res.body = html
-              res.send()
-            })
-        }
-      } else {
-        return function (err, html) {
-          if (html) {
-            getSignature(res.body)
-              .then(out => {
-                html = out
-              })
-          }
-          cb(err, html)
-        }
-      }
-    }
+  console.log('gpgsign')
+  console.log(override)
 
-    res.gpgSigned = function (cb) {
-      this.send(sendSig(cb))
-    }
-
-    if (opts.override) {
-      res.oldSend = res.send
-      res.send = function (cb) {
-        this.oldSend(sendSig(cb))
+  function sendSig (content, callback) {
+    console.log('sendsig')
+    if (typeof callback === 'undefined') {
+      return function (err, html) {
+        if (err) return next(err)
+        getSignature(content)
+          .then(out => {
+            html = out
+            res.send(html)
+          })
+          .catch(err => {
+            return next(err)
+          })
       }
     } else {
-      return next()
+      return function (err, html) {
+        if (html) {
+          getSignature(content)
+            .then(out => {
+              html = out
+            })
+        }
+        callback(err, html)
+      }
     }
+  }
+
+  function signPage (req, res, next) {
+    const content = res.body
+    console.log('signpage')
+
+    if (override === true) {
+      res.oldRenderMethod = res.render
+      res.render = function (view, renderOpts, callback) {
+        this.oldRenderMethod(view, renderOpts, sendSig(content, callback))
+      }
+    } else {
+      res.gpgSigned = function (view, renderOpts, callback) {
+        this.render(view, renderOpts, sendSig(content, callback))
+      }
+    }
+    return next()
   }
 
   return signPage
