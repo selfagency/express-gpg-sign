@@ -1,0 +1,31 @@
+{
+  "name": "express-gpg-sign",
+  "version": "0.0.1",
+  "description": "Express middleware to sign HTML pages with GPG.",
+  "main": "gpgsign.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selfagency/express-gpg-sign.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "middleware",
+    "gpg",
+    "pgp",
+    "encryption",
+    "signature"
+  ],
+  "author": "The Self Agency, LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/selfagency/express-gpg-sign/issues"
+  },
+  "homepage": "https://github.com/selfagency/express-gpg-sign#readme",
+  "dependencies": {
+    "gpg": "^0.6.0"
+  }
+}
