@@ -23,7 +23,7 @@ function gpgSign (opts) {
   cb = opts.cb
 
   function signPage (req, res, next) {
-    const sendSig = function (cb) {
+    function sendSig (cb) {
       if (typeof cb === 'undefined') {
         return function (err, html) {
           if (err) return next(err)
